@@ -1,0 +1,9 @@
+/* 1️⃣ Import Google Font at the very top! */
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap');
+/* 2️⃣ Import Tailwind itself */
+@import "tailwindcss";
+
+/* 3️⃣ Add your theme with font variable */
+@theme {
+    --font-instrument: "Instrument Serif", serif;
+}
