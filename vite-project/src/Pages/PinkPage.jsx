@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-
+import { useNavigate } from 'react-router-dom';
 // ✅ Image list (must match `/public` folder files exactly)
 const images = [
   '/pinkbed-min.jpeg',
@@ -21,7 +21,7 @@ const images = [
 
 const PinkPage = () => {
   const containerRef = useRef();
-
+  const navigate = useNavigate();
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
@@ -42,7 +42,7 @@ const PinkPage = () => {
 
       {/* Top Bar */}
       <div className="h-16 flex justify-between items-center px-4 border-b sticky top-0 bg-white z-10">
-        <button><img src="side.png" alt="Back" className="w-4" /></button>
+        <button onClick={()=> navigate('/gallery')}><img src="side.png" alt="Back" className="w-4" /></button>
         <h1 className="text-xl font-zendots">A STAR GATE</h1>
         <img src="astar.png" alt="Flag" className="w-8" />
       </div>

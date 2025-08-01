@@ -1,27 +1,52 @@
 import { useEffect, useState } from 'react';
 import Offers from '../Components/Offers';
 import { useNavigate } from 'react-router-dom';
+
 const HeroSection = () => {
   const [showOffers, setShowOffers] = useState(false);
-    const navigate = useNavigate();
+  const navigate = useNavigate();
+  const [touchStartY, setTouchStartY] = useState(null);
 
   useEffect(() => {
     const handleWheel = (e) => {
       if (e.deltaY > 10) {
-        // Scroll down
-        setShowOffers(true);
+        setShowOffers(true); // scroll down
       } else if (e.deltaY < -10) {
-        // Scroll up
-        setShowOffers(false);
+        setShowOffers(false); // scroll up
       }
     };
 
-    window.addEventListener('wheel', handleWheel);
-    return () => window.removeEventListener('wheel', handleWheel);
-  }, []);
+    const handleTouchStart = (e) => {
+      setTouchStartY(e.touches[0].clientY);
+    };
+
+    const handleTouchEnd = (e) => {
+      const touchEndY = e.changedTouches[0].clientY;
+      if (touchStartY !== null) {
+        const deltaY = touchStartY - touchEndY;
+        if (deltaY > 30) {
+          // Swipe up
+          setShowOffers(true);
+        } else if (deltaY < -30) {
+          // Swipe down
+          setShowOffers(false);
+        }
+      }
+    };
+
+    window.addEventListener('wheel', handleWheel);           // desktop
+    window.addEventListener('touchstart', handleTouchStart); // mobile start
+    window.addEventListener('touchend', handleTouchEnd);     // mobile end
+
+    return () => {
+      window.removeEventListener('wheel', handleWheel);
+      window.removeEventListener('touchstart', handleTouchStart);
+      window.removeEventListener('touchend', handleTouchEnd);
+    };
+  }, [touchStartY]);
 
   return (
-    <div className="relative w-full h-screen overflow-hidden bg-black">
+    <div className="relative w-full h-screen overflow-hidden bg-black overflow-hidden">
       {/* Background Image */}
       <img
         src="pine.jpg"
@@ -33,27 +58,27 @@ const HeroSection = () => {
       <div className="absolute inset-0 bg-black/30 backdrop-blur-[2px] z-10" />
 
       {/* Hero Content */}
-      <div className="absolute inset-0 z-20 flex flex-col items-center transition-opacity duration-700 ease-in-out"
+      <div
+        className="absolute inset-0 z-20 flex flex-col items-center transition-opacity duration-700 ease-in-out"
         style={{ opacity: showOffers ? 0 : 1, pointerEvents: showOffers ? 'none' : 'auto' }}
       >
-        {/* Logo */}
         <div className="w-[25vh] h-[25vh] m-5">
           <img src="Logo.png" className="w-full h-fit object-contain" />
         </div>
 
-        {/* Headline */}
         <h1 className="text-5xl text-white font-instrument font-light text-center mt-[3vh]">
           Not Just a Stay <br /> A Hillside Story
         </h1>
 
-        {/* Button */}
-        <button className="bg-white rounded-full w-[12vh] h-[4vh] m-[3vh] font-instrument italic"onClick={() => navigate('/gallery')}>
+        <button
+          className="bg-white rounded-full w-[12vh] h-[4vh] m-[3vh] font-instrument italic"
+          onClick={() => navigate('/gallery')}
+        >
           Gallery
         </button>
 
-        {/* Bottom query and arrow */}
         <h2 className="text-white font-instrument underline mt-2">
-          What will I get?
+          Scroll up
         </h2>
         <div className="mt-3 animate-bounce">
           <img src="arrow.png" alt="Up Arrow" className="w-10 h-10" />
@@ -73,6 +98,84 @@ const HeroSection = () => {
 };
 
 export default HeroSection;
+
+
+
+// import { useEffect, useState } from 'react';
+// import Offers from '../Components/Offers';
+// import { useNavigate } from 'react-router-dom';
+// const HeroSection = () => {
+//   const [showOffers, setShowOffers] = useState(false);
+//     const navigate = useNavigate();
+
+//   useEffect(() => {
+//     const handleWheel = (e) => {
+//       if (e.deltaY > 10) {
+//         // Scroll down
+//         setShowOffers(true);
+//       } else if (e.deltaY < -10) {
+//         // Scroll up
+//         setShowOffers(false);
+//       }
+//     };
+
+//     window.addEventListener('wheel', handleWheel);
+//     return () => window.removeEventListener('wheel', handleWheel);
+//   }, []);
+
+//   return (
+//     <div className="relative w-full h-screen overflow-hidden bg-black">
+//       {/* Background Image */}
+//       <img
+//         src="pine.jpg"
+//         alt="hill"
+//         className="absolute inset-0 w-full h-full object-cover"
+//       />
+
+//       {/* Blur Overlay */}
+//       <div className="absolute inset-0 bg-black/30 backdrop-blur-[2px] z-10" />
+
+//       {/* Hero Content */}
+//       <div className="absolute inset-0 z-20 flex flex-col items-center transition-opacity duration-700 ease-in-out"
+//         style={{ opacity: showOffers ? 0 : 1, pointerEvents: showOffers ? 'none' : 'auto' }}
+//       >
+//         {/* Logo */}
+//         <div className="w-[25vh] h-[25vh] m-5">
+//           <img src="Logo.png" className="w-full h-fit object-contain" />
+//         </div>
+
+//         {/* Headline */}
+//         <h1 className="text-5xl text-white font-instrument font-light text-center mt-[3vh]">
+//           Not Just a Stay <br /> A Hillside Story
+//         </h1>
+
+//         {/* Button */}
+//         <button className="bg-white rounded-full w-[12vh] h-[4vh] m-[3vh] font-instrument italic"onClick={() => navigate('/gallery')}>
+//           Gallery
+//         </button>
+
+//         {/* Bottom query and arrow */}
+//         <h2 className="text-white font-instrument underline mt-2">
+//           Scroll up
+//         </h2>
+//         <div className="mt-3 animate-bounce">
+//           <img src="arrow.png" alt="Up Arrow" className="w-10 h-10" />
+//         </div>
+//       </div>
+
+//       {/* Offers Panel */}
+//       <div
+//         className={`absolute bottom-0 left-0 w-full z-30 transition-transform duration-700 ${
+//           showOffers ? 'translate-y-0' : 'translate-y-full'
+//         }`}
+//       >
+//         <Offers />
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default HeroSection;
 
 
 
